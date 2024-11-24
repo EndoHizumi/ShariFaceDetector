@@ -5,7 +5,7 @@
 
             </item>
             <item label="判定を開始する（画像から）">
-                
+                <show src=""
             </item>
         </choice>
     </scenario>
@@ -15,6 +15,10 @@
             background: '',
             bgm: './src/resource/bgm/title_theme.mp3',
             template: './src/screen/title.html'
+        }
+
+        export function getPicture(){
+
         }
     </script>
 </scene>
