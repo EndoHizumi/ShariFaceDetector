@@ -17,14 +17,39 @@
             /* 水平方向の中央揃え */
             align-items: center;
             /* 垂直方向の中央揃え */
-            background-color: #000;
+            background-color: #a2c476;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: absolute;
+            top: 28%;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 22px;
+            margin-bottom: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        progress {
+            width: 100%;
         }
 
         #gameContainer {
             position: relative;
             width: 1280px;
             height: 720px;
-            background-color: #000;
+            background-color: #a2c476;
             color: #fff;
             display: flex;
             /* Flexboxを有効化 */
@@ -37,7 +62,7 @@
         #interactiveView {
             position: absolute;
             width: 100%;
-            height: 500px;
+            height: 100%;
             display: flex;
             flex-direction: column;
             flex-wrap: wrap;
@@ -68,39 +93,20 @@
         }
 
         #messageWindow {
+            text-align: center;
             user-select: none;
             position: absolute;
-            bottom: 30px;
-            left: 0;
+            bottom: 80px;
+            left: -11px;
             width: 100%;
-            height: calc(720px / 4);
-            /* 4分の1の高さ */
-            background-color: rgba(28, 41, 189, 0.3);
             /* 半透明 */
             color: #fff;
-            padding: 10px;
             box-sizing: border-box;
             overflow-y: auto;
         }
 
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30px;
-            background-color: #000;
-            color: #fff;
-        }
-
-        .control-item {
-            text-decoration: none;
-            color: #fff;
-        }
-
         #waitCircle {
+            opacity: 0;
             position: absolute;
             right: 10px;
             bottom: 10px;
@@ -110,12 +116,20 @@
 
 <body>
     <div id="main">
-        <div style="display: flex;
-        justify-content: center;
-        width: 100%;
-        position: absolute;
-        top: 50px;
-        font-size: 2rem;"> シャリ顔判定器 </div>
+        <div class="container">
+            <div style="display: flex; flex-direction:column; align-items: center;; justify-content:center;">
+                <h1>シャリ顔判定器</h1>
+                <span class="credit" style="font-size: xx-small; text-align:center">Powered by <a
+                        href="https://github.com/EndoHizumi/webTaleKit">WebTaleKit</a></span>
+            </div>
+            <div
+                style="width: 300px; height: 200px; background-color: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
+                <img class="facePicture" height="200" width="300" src="./src/resource/background/300x200.png"
+                    alt="プレースホルダー画像">
+            </div>
+            <span class="scoreView">シャリ度：</span>
+            <progress value="0" max="100"></progress>
+        </div>
         <div id="interactiveView"></div>
         <div id="messageWindow">
             <p id="nameView"></p>

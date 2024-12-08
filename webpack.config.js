@@ -62,4 +62,11 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    fallback: {
+      util: false,
+      assert: false,
+      console: require.resolve("console-browserify"),
+    },
+  },
 };

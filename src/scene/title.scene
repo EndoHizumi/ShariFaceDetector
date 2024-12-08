@@ -1,24 +1,115 @@
 <scene name="title">
     <scenario>
-        <choice>
+        <choice prompt="どちらで判定しますか？">
             <item label="判定を開始する（カメラ撮影）">
 
             </item>
             <item label="判定を開始する（画像から）">
-                <show src=""
+                <call method="getPicture()" />
+                <text>画像を選んでください</text>
+                <text time="750">測定中.</text>
+                <text time="750">測定中..</text>
+                <text time="750">測定中...</text>
+                <text>{{judge()}}</text>
             </item>
         </choice>
+        <choice>
+            <item label="もう一度判定する">
+                <call method="clear()" />
+                <jump index="0" />
+            </item>
     </scenario>
     <script>
+        import { ImageObject } from 'webtalekit/src/resource/ImageObject.js';
+        let api = null;
         export const sceneConfig = {
             name: 'title',
-            background: '',
-            bgm: './src/resource/bgm/title_theme.mp3',
+            background: './src/resource/background/title_bg.png',
+            bgm: '',
             template: './src/screen/title.html'
         }
 
-        export function getPicture(){
+        export function clear() {
+            // 画像クリア処理
+            document.querySelector("img").setAttribute("src", "./src/resource/background/300x200.png");
+            document.querySelector('progress').setAttribute("value", 0);
+            document.querySelector('.scoreView').innerHTML = `シャリ度：${0}`;
+        }
 
+        // 診断メッセージデータ
+        export const shariMessages = {
+            perfect: [
+                "完璧なシャリ顔！寿司職人からのスカウトに注意です！",
+                "あなたを見ると酢飯が炊きたくなります！",
+                "これぞ正真正銘のシャリ男！",
+                "シャリ界の次世代エース誕生！"
+            ],
+            high: [
+                "かなりのシャリ度！あとちょっとで極上です",
+                "シャリっとした雰囲気、素晴らしい！",
+                "このシャリ感、惚れ惚れします！",
+                "シャリ修行の成果が出ています！"
+            ],
+            medium: [
+                "まずまずのシャリ具合。精進あるのみ！",
+                "シャリとしては及第点です",
+                "シャリの道も一歩一歩",
+                "シャリ修行の途中かな？"
+            ],
+            low: [
+                "シャリ度が物足らない...精米しましょう",
+                "もっと白くなれる可能性を秘めています",
+                "シャリの道はまだまだ長いです",
+                "シャリ修行が必要かもしれません..."
+            ],
+            critical: [
+                "あなた...もしかして玄米派？",
+                "シャリの概念がありません",
+                "酢飯を見直すところから始めましょう",
+                "シャリ度緊急事態発生！"
+            ]
+        }
+
+        export function init(instance) {
+            // シーン初期化処理
+            api = instance;
+            console.log('title scene init %o', api);
+        }
+
+        export function judge() {
+            let messageArray = [];
+            const score = Math.floor(Math.random() * 101)
+            // スコアに応じてメッセージを選択
+            if (score >= 90) messageArray = shariMessages.perfect
+            else if (score >= 70) messageArray = shariMessages.high
+            else if (score >= 50) messageArray = shariMessages.medium
+            else if (score >= 30) messageArray = shariMessages.low
+            else messageArray = shariMessages.critical
+            document.querySelector('progress').setAttribute("value", score);
+            document.querySelector('.scoreView').innerHTML = `シャリ度：${score}`;
+            return messageArray[Math.floor(Math.random() * messageArray.length)];
+        }
+
+        export function getPicture() {
+            // 画像取得処理
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        const imageData = reader.result;
+                        document.querySelector('img').src = imageData;
+                        // 画面イベントを発火
+                        document.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
         }
     </script>
 </scene>
