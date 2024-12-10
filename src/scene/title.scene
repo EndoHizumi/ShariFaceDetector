@@ -13,6 +13,8 @@
                 <text time="1000">測定中..</text>
                 <text time="1000">測定中...</text>
                 <show mode="bg" src="./src/resource/background/title_bg5.png" />
+                <call method="clearText()" />
+                <call method="showResult()" />
             </item>
         </choice>
         <choice>
@@ -30,6 +32,17 @@
             background: './src/resource/background/title_bg.png',
             bgm: './src/resource/bgm/ichi.mp3',
             template: './src/screen/title.html'
+        }
+
+        export let result = {
+            score: 0,
+            message: '',
+            advice: ''
+        }
+
+        export function clearText() {
+            // テキストクリア処理
+            api.drawer.clearText();
         }
 
         export function clear() {
@@ -73,10 +86,29 @@
             ]
         }
 
+        const advices = [
+            "白米をもっと食べましょう",
+            "寿司屋で修行を積むことをおすすめします",
+            "日光に当たりすぎると玄米化するので注意",
+            "シャリ度を上げるには握り寿司を週3回",
+            "酢飯マイスターの称号まであと一歩！"
+        ];
+
+        // シーン初期化処理
         export function init(instance) {
-            // シーン初期化処理
+            // WebTaleKitのインスタンスを取得
             api = instance;
             console.log('title scene init %o', api);
+        }
+
+        export function showResult() {
+            // 結果表示処理
+            result = judge();
+            document.querySelector('progress').setAttribute("value", result.score);
+            document.querySelector('.scoreText').innerHTML = `シャリ度：${result.score}`;
+            api.drawer.drawText(['判定結果'], 25, document.querySelector('.title'));
+            api.drawer.drawText([result.message], 25, document.querySelector('.resultMessage'));
+            api.drawer.drawText(['アドバイス： ', result.advice], 25, document.querySelector('.advice'));
         }
 
         export function judge() {
@@ -88,9 +120,12 @@
             else if (score >= 50) messageArray = shariMessages.medium
             else if (score >= 30) messageArray = shariMessages.low
             else messageArray = shariMessages.critical
-            document.querySelector('progress').setAttribute("value", score);
-            document.querySelector('.scoreView').innerHTML = `シャリ度：${score}`;
-            return messageArray[Math.floor(Math.random() * messageArray.length)];
+            result = {
+                score: score,
+                message: messageArray[Math.floor(Math.random() * messageArray.length)],
+                advice: advices[Math.floor(Math.random() * advices.length)]
+            }
+            return result;
         }
 
         export function getPicture() {

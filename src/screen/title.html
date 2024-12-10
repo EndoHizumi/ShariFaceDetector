@@ -6,28 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebTaleKit</title>
     <style>
-        body,
-        html {
+        body {
             margin: 0;
-            padding: 0;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
             /* 水平方向の中央揃え */
-            align-items: center;
+            justify-content: center;
             /* 垂直方向の中央揃え */
+            align-items: center;
             background-color: #a2c476;
         }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            position: absolute;
-            top: 28%;
-        }
+
 
         h1 {
             text-align: center;
@@ -38,7 +30,8 @@
 
         img {
             max-width: 100%;
-            height: auto;
+            max-height: 200px;
+            object-fit: contain;
         }
 
         progress {
@@ -64,6 +57,26 @@
             top: 5px;
             right: -100px;
         }
+
+        .credit {
+            font-size: 0.8rem;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            position: absolute;
+            top: 28%;
+        }
+
+        .advice {
+            font-size: 0.7rem;
+            color: whitesmoke;
+        }
+
         .scoreView {
             width: 100%;
         }
@@ -71,6 +84,11 @@
         .scoreText {
             text-align: right;
             width: 100%;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            color: #fff;
         }
 
         #gameContainer {
@@ -140,6 +158,14 @@
             right: 10px;
             bottom: 10px;
         }
+
+        .result {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            visibility: hidden;
+        }
     </style>
 </head>
 
@@ -160,12 +186,16 @@
             </div>
             <div
                 style="width: 300px; height: 200px; background-color: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
-                <img class="facePicture" height="200" width="300" src="./src/resource/background/300x200.png"
-                    alt="プレースホルダー画像">
+                <img class="facePicture" src="./src/resource/background/300x200.png" alt="プレースホルダー画像">
             </div>
             <div class="scoreView">
                 <div class="scoreText">シャリ度：000</div>
                 <progress value="0" max="100"></progress>
+            </div>
+            <div class="result">
+                <div class="title"></div>
+                <div class="resultMessage"></div>
+                <div class="advice"></div>
             </div>
         </div>
         <div id="interactiveView"></div>
