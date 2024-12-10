@@ -38,6 +38,7 @@
             </item>
             <item label="Xに投稿する">
                 <call method="shareToX(result)" />
+                <call method="clear()" />
                 <text>Xへ投稿ありがとう</text>
             </item>
         </choice>
@@ -124,6 +125,7 @@
             document.querySelector(".facePicture").setAttribute("src", "./src/resource/background/300x200.png");
             document.querySelector('progress').setAttribute("value", 0);
             document.querySelector('.scoreText').innerHTML = `シャリ度：${0}`;
+            clearText();
         }
 
         export function showResult() {
