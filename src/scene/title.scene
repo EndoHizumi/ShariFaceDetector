@@ -17,6 +17,18 @@
                 <call method="showResult()" />
             </item>
         </choice>
+        <wait />
+        <choice>
+            <item label="もう一度判定する">
+                <call method="clear()" />
+                <jump index="0" />
+            </item>
+            <item label="Xに投稿する">
+                <call method="shareToX(result)" />
+                <text>Xへ投稿ありがとう。</text>
+            </item>
+        </choice>
+        <wait />
         <choice>
             <item label="もう一度判定する">
                 <call method="clear()" />
@@ -148,6 +160,24 @@
                 }
             };
             input.click();
+        }
+
+        export const shareToX = (result) => {
+            const text = `私のシャリ男度は${result.score}%です！\n 「${result.message}」 \n アドバイス： ${result.advice}\n\n #シャリ男度測定 #クソアプリアドベントカレンダー`
+            const url = 'あなたのアプリのURL'
+            const encodedText = encodeURIComponent(text)
+            const encodedUrl = encodeURIComponent(url)
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
+
+            console.log('share to x %s', shareUrl)
+            // ポップアップウィンドウを開く
+            window.open(
+                shareUrl,
+                'share_x',
+                'width=550,height=420,menubar=no,toolbar=no,scrollbars=yes'
+            )
+            console.log(window)
+            return true
         }
     </script>
 </scene>
