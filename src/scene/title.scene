@@ -104,9 +104,9 @@
                     const reader = new FileReader();
                     reader.onload = async () => {
                         const imageData = reader.result;
-                        document.querySelector('img').src = imageData;
+                        document.querySelector('.facePicture').src = imageData;
                         // 画面イベントを発火
-                        document.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+                        document.querySelector('#gameContainer').dispatchEvent(new PointerEvent('click', { bubbles: true }));
 
                     };
                     reader.readAsDataURL(file);
