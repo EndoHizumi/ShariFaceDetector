@@ -1,5 +1,6 @@
 <scene name="title">
     <scenario>
+        <show mode="bg" src="./src/resource/background/title_bg3.png" />
         <choice prompt="どちらで判定しますか？">
             <item label="判定を開始する（カメラ撮影）">
 
@@ -7,10 +8,11 @@
             <item label="判定を開始する（画像から）">
                 <call method="getPicture()" />
                 <text>画像を選んでください</text>
-                <text time="750">測定中.</text>
-                <text time="750">測定中..</text>
-                <text time="750">測定中...</text>
-                <text>{{judge()}}</text>
+                <show mode="bg" src="./src/resource/background/title_bg4.png" />
+                <text time="1000">測定中.</text>
+                <text time="1000">測定中..</text>
+                <text time="1000">測定中...</text>
+                <show mode="bg" src="./src/resource/background/title_bg5.png" />
             </item>
         </choice>
         <choice>
@@ -18,6 +20,7 @@
                 <call method="clear()" />
                 <jump index="0" />
             </item>
+        </choice>
     </scenario>
     <script>
         import { ImageObject } from 'webtalekit/src/resource/ImageObject.js';
@@ -31,9 +34,9 @@
 
         export function clear() {
             // 画像クリア処理
-            document.querySelector("img").setAttribute("src", "./src/resource/background/300x200.png");
+            document.querySelector(".facePicture").setAttribute("src", "./src/resource/background/300x200.png");
             document.querySelector('progress').setAttribute("value", 0);
-            document.querySelector('.scoreView').innerHTML = `シャリ度：${0}`;
+            document.querySelector('.scoreText').innerHTML = `シャリ度：${0}`;
         }
 
         // 診断メッセージデータ
