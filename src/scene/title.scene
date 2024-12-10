@@ -1,22 +1,35 @@
 <scene name="title">
     <scenario>
         <show mode="bg" src="./src/resource/background/title_bg3.png" />
-        <choice prompt="どちらで判定しますか？">
-            <item label="判定を開始する（カメラ撮影）">
-
-            </item>
-            <item label="判定を開始する（画像から）">
-                <call method="getPicture()" />
-                <text>画像を選んでください</text>
-                <show mode="bg" src="./src/resource/background/title_bg4.png" />
-                <text time="1000">測定中.</text>
-                <text time="1000">測定中..</text>
-                <text time="1000">測定中...</text>
-                <show mode="bg" src="./src/resource/background/title_bg5.png" />
-                <call method="clearText()" />
-                <call method="showResult()" />
-            </item>
-        </choice>
+        <if condition="getDevice() == 'mobile'">
+            <then>
+                <choice prompt="どちらで判定しますか？">
+                    <item label="判定を開始する（カメラ撮影）">
+                        <call method="getPicture(0)" />
+                    </item>
+                    <item label="判定を開始する（画像から）">
+                        <call method="getPicture(1)" />
+                        <text>画像を選んだら、タップしてください</text>
+                    </item>
+                </choice>
+            </then>
+            <else>
+                <choice prompt="">
+                    <item label="判定を開始する（画像から）">
+                        <call method="getPicture(1)" />
+                        <text>画像を選んだら、タップしてください</text>
+                    </item>
+                </choice>
+            </else>
+        </if>
+        <wait />
+        <show mode="bg" src="./src/resource/background/title_bg4.png" />
+        <text time="1000">測定中.</text>
+        <text time="1000">測定中..</text>
+        <text time="1000">測定中...</text>
+        <show mode="bg" src="./src/resource/background/title_bg5.png" />
+        <call method="clearText()" />
+        <call method="showResult()" />
         <wait />
         <choice>
             <item label="もう一度判定する">
@@ -25,7 +38,7 @@
             </item>
             <item label="Xに投稿する">
                 <call method="shareToX(result)" />
-                <text>Xへ投稿ありがとう。</text>
+                <text>Xへ投稿ありがとう</text>
             </item>
         </choice>
         <wait />
@@ -50,18 +63,6 @@
             score: 0,
             message: '',
             advice: ''
-        }
-
-        export function clearText() {
-            // テキストクリア処理
-            api.drawer.clearText();
-        }
-
-        export function clear() {
-            // 画像クリア処理
-            document.querySelector(".facePicture").setAttribute("src", "./src/resource/background/300x200.png");
-            document.querySelector('progress').setAttribute("value", 0);
-            document.querySelector('.scoreText').innerHTML = `シャリ度：${0}`;
         }
 
         // 診断メッセージデータ
@@ -112,15 +113,28 @@
             api = instance;
             console.log('title scene init %o', api);
         }
+        export function clearText() {
+            // テキストクリア処理
+            api.drawer.clearText();
+        }
+
+        export function clear() {
+            // 画像クリア処理
+            document.querySelector('.result').style.visibility = 'hidden';
+            document.querySelector(".facePicture").setAttribute("src", "./src/resource/background/300x200.png");
+            document.querySelector('progress').setAttribute("value", 0);
+            document.querySelector('.scoreText').innerHTML = `シャリ度：${0}`;
+        }
 
         export function showResult() {
             // 結果表示処理
             result = judge();
+            document.querySelector('.result').style.visibility = 'visible';
             document.querySelector('progress').setAttribute("value", result.score);
             document.querySelector('.scoreText').innerHTML = `シャリ度：${result.score}`;
-            api.drawer.drawText(['判定結果'], 25, document.querySelector('.title'));
-            api.drawer.drawText([result.message], 25, document.querySelector('.resultMessage'));
-            api.drawer.drawText(['アドバイス： ', result.advice], 25, document.querySelector('.advice'));
+            document.querySelector('.title').innerHTML = '判定結果';
+            document.querySelector('.resultMessage').innerHTML = result.message;
+            document.querySelector('.advice').innerHTML = `アドバイス： ${result.advice}`;
         }
 
         export function judge() {
@@ -140,10 +154,22 @@
             return result;
         }
 
-        export function getPicture() {
+        export function getDevice() {
+            // デバイス取得処理
+            const ua = navigator.userAgent.toLowerCase()
+            if (/android|iphone|ipad|ipod/.test(ua)) {
+                return 'mobile'
+            } else {
+                return 'pc'
+            }
+        }
+
+        export function getPicture(mode = 1) {
             // 画像取得処理
             const input = document.createElement('input');
-            input.type = 'file';
+            // カメラ撮影かファイル選択かを判定
+            input.type = 'file'
+            if (mode === 0) input.capture = 'environment';
             input.accept = 'image/*';
             input.onchange = (event) => {
                 const file = event.target.files[0];
