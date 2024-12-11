@@ -50,162 +50,159 @@
             </item>
         </choice>
     </scenario>
-    <script>
-        import { ImageObject } from 'webtalekit/src/resource/ImageObject.js';
-        let api = null;
-        export const sceneConfig = {
-            name: 'title',
-            background: './src/resource/background/title_bg.png',
-            bgm: './src/resource/bgm/ichi.mp3',
-            template: './src/screen/title.html'
-        }
+    <script type="text/typescript">
+       let api: any = null;
 
-        export let result = {
-            score: 0,
-            message: '',
-            advice: ''
-        }
+       export const sceneConfig = {
+           name: 'title',
+           background: './src/resource/background/title_bg.png',
+           bgm: './src/resource/bgm/ichi.mp3',
+           template: './src/screen/title.html'
+       }
 
-        // 診断メッセージデータ
-        export const shariMessages = {
-            perfect: [
-                "完璧なシャリ顔！寿司職人からのスカウトに注意です！",
-                "あなたを見ると酢飯が炊きたくなります！",
-                "これぞ正真正銘のシャリ男！",
-                "シャリ界の次世代エース誕生！"
-            ],
-            high: [
-                "かなりのシャリ度！あとちょっとで極上です",
-                "シャリっとした雰囲気、素晴らしい！",
-                "このシャリ感、惚れ惚れします！",
-                "シャリ修行の成果が出ています！"
-            ],
-            medium: [
-                "まずまずのシャリ具合。精進あるのみ！",
-                "シャリとしては及第点です",
-                "シャリの道も一歩一歩",
-                "シャリ修行の途中かな？"
-            ],
-            low: [
-                "シャリ度が物足らない...精米しましょう",
-                "もっと白くなれる可能性を秘めています",
-                "シャリの道はまだまだ長いです",
-                "シャリ修行が必要かもしれません..."
-            ],
-            critical: [
-                "あなた...もしかして玄米派？",
-                "シャリの概念がありません",
-                "酢飯を見直すところから始めましょう",
-                "シャリ度緊急事態発生！"
-            ]
-        }
+       export let result = {
+           score: 0,
+           message: '',
+           advice: ''
+       }
 
-        const advices = [
-            "白米をもっと食べましょう",
-            "寿司屋で修行を積むことをおすすめします",
-            "日光に当たりすぎると玄米化するので注意",
-            "シャリ度を上げるには握り寿司を週3回",
-            "酢飯マイスターの称号まであと一歩！"
-        ];
+       // 診断メッセージデータ
+       export const shariMessages = {
+           perfect: [
+               "完璧なシャリ顔！寿司職人からのスカウトに注意です！",
+               "あなたを見ると酢飯が炊きたくなります！",
+               "これぞ正真正銘のシャリ男！",
+               "シャリ界の次世代エース誕生！"
+           ],
+           high: [
+               "かなりのシャリ度！あとちょっとで極上です",
+               "シャリっとした雰囲気、素晴らしい！",
+               "このシャリ感、惚れ惚れします！",
+               "シャリ修行の成果が出ています！"
+           ],
+           medium: [
+               "まずまずのシャリ具合。精進あるのみ！",
+               "シャリとしては及第点です",
+               "シャリの道も一歩一歩",
+               "シャリ修行の途中かな？"
+           ],
+           low: [
+               "シャリ度が物足らない...精米しましょう",
+               "もっと白くなれる可能性を秘めています",
+               "シャリの道はまだまだ長いです",
+               "シャリ修行が必要かもしれません..."
+           ],
+           critical: [
+               "あなた...もしかして玄米派？",
+               "シャリの概念がありません",
+               "酢飯を見直すところから始めましょう",
+               "シャリ度緊急事態発生！"
+           ]
+       }
 
-        // シーン初期化処理
-        export function init(instance) {
-            // WebTaleKitのインスタンスを取得
-            api = instance;
-            console.log('title scene init %o', api);
-        }
-        export function clearText() {
-            // テキストクリア処理
-            api.drawer.clearText();
-        }
+       const advices = [
+           "白米をもっと食べましょう",
+           "寿司屋で修行を積むことをおすすめします",
+           "日光に当たりすぎると玄米化するので注意",
+           "シャリ度を上げるには握り寿司を週3回",
+           "酢飯マイスターの称号まであと一歩！"
+       ];
 
-        export function clear() {
-            // 画像クリア処理
-            document.querySelector('.result').style.visibility = 'hidden';
-            document.querySelector(".facePicture").setAttribute("src", "./src/resource/background/300x200.png");
-            document.querySelector('progress').setAttribute("value", 0);
-            document.querySelector('.scoreText').innerHTML = `シャリ度：${0}`;
-            clearText();
-        }
+       // シーン初期化処理
+       export function init(instance: any) {
+           // WebTaleKitのインスタンスを取得
+           api = instance;
+       }
 
-        export function showResult() {
-            // 結果表示処理
-            result = judge();
-            document.querySelector('.result').style.visibility = 'visible';
-            document.querySelector('progress').setAttribute("value", result.score);
-            document.querySelector('.scoreText').innerHTML = `シャリ度：${result.score}`;
-            document.querySelector('.title').innerHTML = '判定結果';
-            document.querySelector('.resultMessage').innerHTML = result.message;
-            document.querySelector('.advice').innerHTML = `アドバイス： ${result.advice}`;
-        }
+       export function clearText() {
+           // テキストクリア処理
+           api.drawer.clearText();
+       }
 
-        export function judge() {
-            let messageArray = [];
-            const score = Math.floor(Math.random() * 101)
-            // スコアに応じてメッセージを選択
-            if (score >= 90) messageArray = shariMessages.perfect
-            else if (score >= 70) messageArray = shariMessages.high
-            else if (score >= 50) messageArray = shariMessages.medium
-            else if (score >= 30) messageArray = shariMessages.low
-            else messageArray = shariMessages.critical
-            result = {
-                score: score,
-                message: messageArray[Math.floor(Math.random() * messageArray.length)],
-                advice: advices[Math.floor(Math.random() * advices.length)]
-            }
-            return result;
-        }
+       export function clear() {
+           // 画像クリア処理
+           (document.querySelector('.facePicture') as HTMLImageElement).setAttribute("src", "./src/resource/background/300x200.png");
+           (document.querySelector('.result') as HTMLElement).style.visibility = 'hidden';
+           (document.querySelector('progress') as HTMLElement).setAttribute("value", String(0));
+           (document.querySelector('.scoreText') as HTMLElement).innerHTML = `シャリ度：000`;
+           clearText();
+       }
 
-        export function getDevice() {
-            // デバイス取得処理
-            const ua = navigator.userAgent.toLowerCase()
-            if (/android|iphone|ipad|ipod/.test(ua)) {
-                return 'mobile'
-            } else {
-                return 'pc'
-            }
-        }
+       export function showResult() {
+           // 結果表示処理
+           result = judge();
+           (document.querySelector('.result') as HTMLElement).style.visibility = 'visible';
+           (document.querySelector('progress') as HTMLElement).setAttribute("value", result.score.toString());
+           (document.querySelector('.scoreText') as HTMLElement).innerHTML = `シャリ度：${result.score}`;
+           (document.querySelector('.title') as HTMLElement).innerHTML = '判定結果';
+           (document.querySelector('.resultMessage') as HTMLElement).innerHTML = result.message;
+           (document.querySelector('.advice') as HTMLElement).innerHTML = `アドバイス： ${result.advice}`;
+       }
 
-        export function getPicture(mode = 1) {
-            // 画像取得処理
-            const input = document.createElement('input');
-            // カメラ撮影かファイル選択かを判定
-            input.type = 'file'
-            if (mode === 0) input.capture = 'environment';
-            input.accept = 'image/*';
-            input.onchange = (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = async () => {
-                        const imageData = reader.result;
-                        document.querySelector('.facePicture').src = imageData;
-                        // 画面イベントを発火
-                        document.querySelector('#gameContainer').dispatchEvent(new PointerEvent('click', { bubbles: true }));
+       export function judge() {
+           let messageArray = [];
+           const score = Math.floor(Math.random() * 101)
+           // スコアに応じてメッセージを選択
+           if (score >= 90) messageArray = shariMessages.perfect
+           else if (score >= 70) messageArray = shariMessages.high
+           else if (score >= 50) messageArray = shariMessages.medium
+           else if (score >= 30) messageArray = shariMessages.low
+           else messageArray = shariMessages.critical
+           result = {
+               score: score,
+               message: messageArray[Math.floor(Math.random() * messageArray.length)],
+               advice: advices[Math.floor(Math.random() * advices.length)]
+           }
+           return result;
+       }
 
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
+       export function getDevice() {
+           // デバイス取得処理
+           const ua = navigator.userAgent.toLowerCase()
+           if (/android|iphone|ipad|ipod/.test(ua)) {
+               return 'mobile'
+           } else {
+               return 'pc'
+           }
+       }
 
-        export const shareToX = (result) => {
-            const text = `私のシャリ男度は${result.score}%です！\n 「${result.message}」 \n アドバイス： ${result.advice}\n\n #シャリ男度測定 #クソアプリアドベントカレンダー`
-            const url = 'あなたのアプリのURL'
-            const encodedText = encodeURIComponent(text)
-            const encodedUrl = encodeURIComponent(url)
-            const shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
+       export function getPicture(mode = 1) {
+           // 画像取得処理
+           const input = document.createElement('input');
+           // カメラ撮影かファイル選択かを判定
+           input.type = 'file'
+           if (mode === 0) input.capture = 'environment';
+           input.accept = 'image/*';
+           input.onchange = (event: any) => {
+               const file = event.target.files[0];
+               if (file) {
+                   const reader = new FileReader();
+                   reader.onload = async () => {
+                       const imageData = reader.result;
+                       (document.querySelector('.facePicture') as HTMLImageElement).setAttribute("src", imageData as string);
+                       // 画面イベントを発火
+                       (document.querySelector('#gameContainer') as HTMLElement).dispatchEvent(new PointerEvent('click', { bubbles: true }));
 
-            console.log('share to x %s', shareUrl)
-            // ポップアップウィンドウを開く
-            window.open(
-                shareUrl,
-                'share_x',
-                'width=550,height=420,menubar=no,toolbar=no,scrollbars=yes'
-            )
-            console.log(window)
-            return true
-        }
-    </script>
+                   };
+                   reader.readAsDataURL(file);
+               }
+           };
+           input.click();
+       }
+
+       export const shareToX = (result: {[key:string]: string | number}) => {
+           const text = `私のシャリ男度は${result.score}%です！\n 「${result.message}」 \n アドバイス： ${result.advice}\n\n #シャリ男度測定 #クソアプリアドベントカレンダー`
+           const url = 'あなたのアプリのURL'
+           const encodedText = encodeURIComponent(text)
+           const encodedUrl = encodeURIComponent(url)
+           const shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
+           // ポップアップウィンドウを開く
+           window.open(
+               shareUrl,
+               'share_x',
+               'width=550,height=420,menubar=no,toolbar=no,scrollbars=yes'
+           )
+           return true
+       }
+  </script>
 </scene>
