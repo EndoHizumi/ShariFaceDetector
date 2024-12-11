@@ -192,7 +192,7 @@
 
        export const shareToX = (result: {[key:string]: string | number}) => {
            const text = `私のシャリ男度は${result.score}%です！\n 「${result.message}」 \n アドバイス： ${result.advice}\n\n #シャリ男度測定 #クソアプリアドベントカレンダー`
-           const url = 'あなたのアプリのURL'
+           const url = 'https://shari-face-detector.vercel.app/'
            const encodedText = encodeURIComponent(text)
            const encodedUrl = encodeURIComponent(url)
            const shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`

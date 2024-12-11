@@ -48,6 +48,10 @@ module.exports = {
               source: path.resolve(__dirname, "./src/screen"),
               destination: path.resolve(__dirname, "dist/src/screen"),
             },
+            {
+              source: path.resolve(__dirname, "./src/og_image.png"),
+              destination: path.resolve(__dirname, "dist/og_image.png"),
+            },
           ],
         },
       },
