@@ -1,0 +1,10 @@
+{
+  "title": "シャリ顔判定機",
+  "description": "最新技術であなたのシャリ顔度を判定！！",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "fullScreen": "false",
+  "url": ""
+}
