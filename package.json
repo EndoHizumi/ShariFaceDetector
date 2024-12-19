@@ -13,7 +13,7 @@
     "console-browserify": "^1.2.0",
     "html-webpack-plugin": "^5.6.0",
     "storejs": "^2.1.0",
-    "webtalekit-alpha": "https://github.com/EndoHizumi/webTaleKit#fix/crash-game-1"
+    "webtalekit-alpha": "git+https://github.com/EndoHizumi/webTaleKit.git#fix/crash-game-1"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
